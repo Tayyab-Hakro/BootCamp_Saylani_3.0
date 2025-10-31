@@ -4,7 +4,7 @@ import axios from "axios";
 function Addpayment() {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
-  const [type, setType] = useState(""); // income ya expense
+  const [type, setType] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -21,7 +21,7 @@ function Addpayment() {
       const response = await axios.post("http://localhost:3000/api/payments/addpayment", {
         description,
         amount,
-        balance: type, // backend me balance field ko fill karenge
+        balance: type, 
       });
 
       if (response.data.success) {

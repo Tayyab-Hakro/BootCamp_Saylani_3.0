@@ -3,7 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import bcrypt from "bcrypt";
-import UserModel from "../schemes/UserScheme.js"; // <- aapka mongoose model
+import UserModel from "../schemes/UserScheme.js"; 
 import jwt from "jsonwebtoken"
 const router = express.Router();
 

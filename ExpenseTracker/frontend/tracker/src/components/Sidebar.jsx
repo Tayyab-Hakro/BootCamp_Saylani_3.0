@@ -34,12 +34,12 @@ function Sidebar() {
         },
       });
 
-      if (res.data && res.data.success) {
+      if (res.data.success) {
         setUser(res.data.data);
       }
     } catch (error) {
       console.log(error.response ? error.response.data : error.message);
-      localStorage.removeItem("token"); // invalid token
+      localStorage.removeItem("token"); 
     } finally {
       setLoading(false);
     }

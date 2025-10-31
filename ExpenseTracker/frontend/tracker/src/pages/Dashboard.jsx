@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Wallet, Banknote, CreditCard, MoreHorizontal } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const COLORS = ['#FF8042', '#FF0000'];
 const BALANCE_COLOR = '#8884d8';
@@ -27,13 +29,13 @@ export default function Dashboard() {
       try {
         const res = await axios.get('http://localhost:3000/api/payments/dashboard');
         if (res.data.success) {
-          setPayments(res.data.payments);
+          setPayments(res.data.payments || []);
           setSummary({
             totalIncome: res.data.totalIncome,
             totalExpenses: res.data.totalExpense,
             totalBalance: res.data.totalBalance,
           });
-          console.log(res.data)
+          console.log("Fetched data:", res.data);
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -41,6 +43,42 @@ export default function Dashboard() {
     };
     fetchData();
   }, []);
+
+  const handleDownloadExcel = () => {
+    if (payments.length === 0) {
+      alert('No transaction data available to download.');
+      return;
+    }
+
+    const worksheetData = payments.map((tx, index) => ({
+      Description: tx.description,
+      Amount: tx.amount,
+      Type: tx.balance,
+   }));
+
+    const transactionSheet = XLSX.utils.json_to_sheet(worksheetData);
+
+  
+    const summaryData = [
+      { Category: 'Total Income', Amount: summary.totalIncome },
+      { Category: 'Total Expenses', Amount: summary.totalExpenses },
+      { Category: 'Total Balance', Amount: summary.totalBalance },
+    ];
+    const summarySheet = XLSX.utils.json_to_sheet(summaryData);
+
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+    XLSX.utils.book_append_sheet(workbook, transactionSheet, 'All Transactions');
+
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    saveAs(blob, 'All_Transactions_Data.xlsx');
+  };
 
   const chartData = [
     { name: 'Total Income', value: summary.totalIncome },
@@ -93,7 +131,16 @@ export default function Dashboard() {
         {/* Transactions */}
         <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Recent Transactions</h2>
+            <h2 className="text-xl font-semibold text-gray-800">All Transactions</h2>
+
+            {/* Download Excel Button */}
+            <button
+              onClick={handleDownloadExcel}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+            >
+              Download Excel
+            </button>
+
             <button className="text-gray-500 hover:text-gray-800">
               <MoreHorizontal size={20} />
             </button>
@@ -101,15 +148,23 @@ export default function Dashboard() {
 
           <div className="space-y-4">
             {payments.map((tx) => (
-              <div key={tx._id} className="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50">
+              <div
+                key={tx._id}
+                className="flex items-center justify-between p-4 rounded-lg hover:bg-gray-50"
+              >
                 <div>
                   <h4 className="font-semibold text-gray-700">{tx.description}</h4>
- {tx.Date ? new Date(tx.Date).toLocaleDateString() : "No date"}
+                  <p className="text-sm text-gray-500">
+                    {tx.Date ? new Date(tx.Date).toLocaleDateString() : 'No date'}
+                  </p>
                 </div>
                 <span
-                  className={`font-semibold ${tx.balance === 'expense' ? 'text-red-500' : 'text-green-500'}`}
+                  className={`font-semibold ${
+                    tx.balance === 'expense' ? 'text-red-500' : 'text-green-500'
+                  }`}
                 >
-                  {tx.balance === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
+                  {tx.balance === 'expense' ? '-' : '+'}
+                  {formatCurrency(tx.amount)}
                 </span>
               </div>
             ))}
@@ -118,13 +173,30 @@ export default function Dashboard() {
 
         {/* Chart */}
         <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 self-start">Financial Overview</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 self-start">
+            Financial Overview
+          </h2>
           <div className="w-full h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Tooltip formatter={(value, name) => [formatCurrency(value), name]} />
-                <Pie data={innerChartData} dataKey="value" cx="50%" cy="50%" outerRadius={60} innerRadius={50} fill={BALANCE_COLOR} />
-                <Pie data={chartData} dataKey="value" cx="50%" cy="50%" innerRadius={70} outerRadius={90}>
+                <Pie
+                  data={innerChartData}
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={60}
+                  innerRadius={50}
+                  fill={BALANCE_COLOR}
+                />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={90}
+                >
                   {chartData.map((entry, index) => (
                     <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}

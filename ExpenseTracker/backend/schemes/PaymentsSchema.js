@@ -13,10 +13,6 @@ const PaymentScheme = new mongoose.Schema({
         type:String,
        enum: ["income", "expense"], 
     }, 
-    Date :{
-        type:Date,
-         date: { type: Date, default: Date.now }
-    }
 })
 const PaymentModel = mongoose.model("UserPayments" , PaymentScheme)
 export default PaymentModel
