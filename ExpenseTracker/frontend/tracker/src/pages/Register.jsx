@@ -9,8 +9,6 @@ function Register() {
   const [password, setPassword] = useState("");
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
-
-  // 🧩 Handle signup
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -40,7 +38,6 @@ function Register() {
     }
   };
 
-  // 🧩 Handle login
   const handleLogin = async (e) => {
     e.preventDefault();
 

@@ -54,6 +54,7 @@ export default function Dashboard() {
       Description: tx.description,
       Amount: tx.amount,
       Type: tx.balance,
+      
    }));
 
     const transactionSheet = XLSX.utils.json_to_sheet(worksheetData);
@@ -154,9 +155,7 @@ export default function Dashboard() {
               >
                 <div>
                   <h4 className="font-semibold text-gray-700">{tx.description}</h4>
-                  <p className="text-sm text-gray-500">
-                    {tx.Date ? new Date(tx.Date).toLocaleDateString() : 'No date'}
-                  </p>
+                
                 </div>
                 <span
                   className={`font-semibold ${

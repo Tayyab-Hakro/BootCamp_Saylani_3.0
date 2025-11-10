@@ -1,6 +1,5 @@
 import PaymentModel from "../schemes/PaymentsSchema.js";
 
-// ---------------------- ADD PAYMENT ----------------------
 export const addpayments = async (req, res) => {
   try {
     const { description, amount, balance } = req.body;
@@ -45,12 +44,10 @@ export const addpayments = async (req, res) => {
       });
     }
 
-    // 5️⃣ Create Payment Record
     const newPayment = await PaymentModel.create({
       description,
       amount: numericAmount,
       balance,
-      Date: new Date(),
     });
 
     return res.status(201).json({

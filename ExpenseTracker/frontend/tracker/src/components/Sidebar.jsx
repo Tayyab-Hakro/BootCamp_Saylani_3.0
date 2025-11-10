@@ -15,7 +15,7 @@ function Sidebar() {
   const token = localStorage.getItem("token");
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); 
+    localStorage.removeItem(""); 
     setUser(null);
     alert("User logged out successfully");
     navigate("/register"); 
@@ -58,9 +58,9 @@ function Sidebar() {
   }
 
   return (
-    <aside className="w-64 bg-white shadow-lg flex-shrink-0 flex flex-col p-4 rounded-lg m-2 lg:m-4">
+    <aside className="flex flex-col flex-shrink-0 w-64 p-4 m-2 bg-white rounded-lg shadow-lg lg:m-4">
       {/* Profile Section */}
-      <div className="flex items-center gap-3 p-4 mb-6 border-b border-gray-200 pb-6">
+      <div className="flex items-center gap-3 p-4 pb-6 mb-6 border-b border-gray-200">
         <img
           src={
             user?.image
@@ -82,26 +82,26 @@ function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex flex-col gap-2">
-        <div className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-100">
+        <div className="flex items-center gap-3 p-3 text-gray-600 rounded-lg hover:bg-gray-100">
           <LayoutDashboard size={20} />
           <Link to={"/"}>
             <span>Dashboard</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-100">
+        <div className="flex items-center gap-3 p-3 text-gray-600 rounded-lg hover:bg-gray-100">
           <Landmark size={20} />
           <Link to={"/income"}>
             <span>Income</span>
           </Link>
         </div>
 
-        <div className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-100">
+        <div className="flex items-center gap-3 p-3 text-gray-600 rounded-lg hover:bg-gray-100">
           <ArrowDownCircle size={20} />
         <Link to={"/expense"}> <span>Expense</span></Link >
         </div>
 
-        <div className="flex items-center gap-3 p-3 rounded-lg text-gray-600 hover:bg-gray-100">
+        <div className="flex items-center gap-3 p-3 text-gray-600 rounded-lg hover:bg-gray-100">
           <ArrowDownCircle size={20} />
           <Link to={"/add-payment"}>
             <span>Add Payments</span>
